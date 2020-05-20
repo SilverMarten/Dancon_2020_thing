@@ -13,28 +13,35 @@ void drawCell(int row, int column) {
   
   switch(adjacentCells) {
     // If there are no active adjacent cells, draw a circle.
-    case(0):
+    case(0):      
       ellipse(0, 0, cellSize, cellSize);
       break;
     
     // If only one adjacent cell is active, figure out which one, 
     // and draw a rectangle to it.
     case(1):
+    //filter(BLUR,3);
       if (isOn(row+1, column)) {
+        //filter(BLUR,3);
         rect(cellSize/4, 0, cellSize/2, cellSize);
       } else if (isOn(row-1, column)) {
+        //filter(BLUR,3);
         rect(-cellSize/4, 0, cellSize/2, cellSize);
       } else if (isOn(row, column+1)) {
+        //filter(BLUR,3);
         rect(0, cellSize/4, cellSize, cellSize/2);
       } else if (isOn(row, column-1)) {
+        //filter(BLUR,3);
         rect(0, -cellSize/4, cellSize, cellSize/2);
       }
+      //filter(BLUR,3);
       ellipse(0, 0, cellSize, cellSize);
       break;
     
     // If this cell is in between two active cells,
     // draw a rectangle to bridge them.
     case(2):
+      //filter(BLUR,3);
       rect(0, 0, cellSize, cellSize);
       break;
   }

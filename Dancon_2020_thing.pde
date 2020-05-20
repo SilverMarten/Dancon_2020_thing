@@ -1,21 +1,26 @@
 import java.util.*;
-
+PImage canvas;
 /** The collection of cells which make up the grid.*/
 List<Cell> grid = new ArrayList(0);
 /** The number of columns in the code. */
-int xSize=4;
+int xSize=10;
 /** The number of rows of the code. */
-int ySize=4;
+int ySize=10;
 /** The number of pixels of a cell.*/
-int cellSize;
-
+float cellSize;
+float Margin=0.;
+int blur;
 /**
  * Scale the grid to 2/3 of the smallest dimention of the window.   
  */
-void setup() {
-  size(600, 600, P2D);
+void setup() {  
+  size(600, 600);
+  fill(255);
+  stroke(255);
   //fullScreen(P2D);
-  cellSize=min(width*2/3/2/xSize, height*2/3/2/ySize);
+  cellSize=min(width*(1-Margin)/2/xSize, height*(1-Margin)/2/ySize);
+  //println(cellSize);
+  blur=int(cellSize/5.);
   rectMode(CENTER);
   for (int x=0; x<2*xSize-1; x++) {
     for (int y=0; y<2*ySize-1; y++) {
@@ -33,11 +38,19 @@ void setup() {
  */
 void draw() {
   background(0);
-  colour=255;
+  //colour=255;
   for (Cell c : grid) {
-    //colour+=255/(3*xSize*ySize-ySize-xSize+2);
-    fill(colour);
-    stroke(colour);
+    //colour+=127/(3*xSize*ySize-ySize-xSize+2);
+    //fill(colour);
+    //stroke(colour);
+    c.show();
+  }
+  filter(BLUR, blur);
+  //colour=128;
+  for (Cell c : grid) {
+    //colour+=127/(3*xSize*ySize-ySize-xSize+2);
+    //fill(colour);
+    //stroke(colour);
     c.show();
   }
   noLoop();
@@ -64,9 +77,20 @@ void generate() {
  * When the space key is pressed, generate a new code.
  */
 void keyPressed() {
-  if (key==' ') {
+  switch(key) {
+    case(' '):
     generate();
     loop();
+    break;
+    case('s'):
+    filter(INVERT);
+    canvas=createImage(width, height, ALPHA);
+    canvas.loadPixels();
+    loadPixels();
+    canvas.pixels = pixels;
+    canvas.updatePixels();
+    canvas.save("code.png");
+    break;
   }
 }
 
@@ -89,10 +113,4 @@ boolean isOn(int row, int column) {
     }
   }
   return false;
-}
-
-void blur(){
-  
-  
-  
 }
