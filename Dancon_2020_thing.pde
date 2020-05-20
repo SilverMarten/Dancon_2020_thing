@@ -3,9 +3,9 @@ PImage canvas;
 /** The collection of cells which make up the grid.*/
 List<Cell> grid = new ArrayList(0);
 /** The number of columns in the code. */
-int xSize=10;
+int xSize=4;
 /** The number of rows of the code. */
-int ySize=10;
+int ySize=4;
 /** The number of pixels of a cell.*/
 float cellSize;
 float Margin=0.;
@@ -17,6 +17,7 @@ void setup() {
   size(600, 600);
   fill(255);
   stroke(255);
+  frameRate(100);
   //fullScreen(P2D);
   cellSize=min(width*(1-Margin)/2/xSize, height*(1-Margin)/2/ySize);
   //println(cellSize);
@@ -29,7 +30,6 @@ void setup() {
       }
     }
   }
-  generate();
 }
 
 /**
@@ -37,6 +37,10 @@ void setup() {
  * Tell each cell to draw itself.
  */
 void draw() {
+  if (i>=4) {
+    noLoop();
+  }
+  generate();
   background(0);
   //colour=255;
   for (Cell c : grid) {
@@ -53,7 +57,8 @@ void draw() {
     //stroke(colour);
     c.show();
   }
-  noLoop();
+  saveImg();
+  i++;
 }
 int colour;
 
@@ -77,21 +82,22 @@ void generate() {
  * When the space key is pressed, generate a new code.
  */
 void keyPressed() {
-  switch(key) {
-    case(' '):
-    generate();
+    if(key=='b'){
+    i=1;
     loop();
-    break;
-    case('s'):
-    filter(INVERT);
-    canvas=createImage(width, height, ALPHA);
-    canvas.loadPixels();
-    loadPixels();
-    canvas.pixels = pixels;
-    canvas.updatePixels();
-    canvas.save("code.png");
-    break;
+    }
   }
+int i=1;
+
+void saveImg() {
+  filter(INVERT);  
+  canvas=createImage(width, height, ALPHA);
+  canvas.loadPixels();
+  loadPixels();
+  canvas.pixels = pixels;
+  canvas.updatePixels();
+  canvas.save("images/Code " + i + ".png");
+  updatePixels();
 }
 
 /**
