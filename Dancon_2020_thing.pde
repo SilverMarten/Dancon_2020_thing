@@ -45,7 +45,7 @@ void draw() {
 int colour;
 
 /**
- * Randomize the grid, and go through it setting the links. 
+ * Randomize the grid, resets all the cells, goes through it setting the links, and fills in the verticies. 
  */
 void generate() {
   Collections.shuffle(grid);
@@ -89,4 +89,10 @@ boolean isOn(int row, int column) {
     }
   }
   return false;
+}
+
+void blur(){
+  
+  
+  
 }
