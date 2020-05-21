@@ -1,15 +1,30 @@
 import java.util.*;
+/** The number of images to generate in a batch. */
+int BATCH_SIZE = 10;
+/** The percent margin to leave around the code. */
+float MARGIN=0.;
+/** Background colour. */
+color BG_COLOUR = #ffffff;
+/** Foreground colour. */
+color FG_COLOUR = #000000;
+/** Colours to cycle through. */
+color[] FG_COLOURS = {#8f5725, #d1495b, #BC3324, #19647e, #C45912, 
+                      #4956D6, #654597, #417b54, #30292f, #544b3d};
+
 PImage canvas;
 /** The collection of cells which make up the grid.*/
 List<Cell> grid = new ArrayList(0);
 /** The number of columns in the code. */
-int xSize=4;
+int xSize=5;
 /** The number of rows of the code. */
-int ySize=4;
+int ySize=5;
 /** The number of pixels of a cell.*/
 float cellSize;
-float Margin=0.;
+/** The blur radius. Calcutated based on the size of the cells. */
 int blur;
+/** The index of the code we're processing. */
+int codeIndex=1;
+
 /**
  * Scale the grid to 2/3 of the smallest dimention of the window.   
  */
@@ -19,7 +34,7 @@ void setup() {
   stroke(255);
   frameRate(100);
   //fullScreen(P2D);
-  cellSize=min(width*(1-Margin)/2/xSize, height*(1-Margin)/2/ySize);
+  cellSize=min(width*(1-MARGIN)/2/xSize, height*(1-MARGIN)/2/ySize);
   //println(cellSize);
   blur=int(cellSize/5.);
   rectMode(CENTER);
@@ -37,11 +52,13 @@ void setup() {
  * Tell each cell to draw itself.
  */
 void draw() {
-  if (i>=4) {
+  if (codeIndex >= BATCH_SIZE) {
     noLoop();
   }
   generate();
-  background(0);
+  background(BG_COLOUR);
+  fill(FG_COLOURS[codeIndex-1 % FG_COLOURS.length]);
+  stroke(FG_COLOURS[codeIndex-1 % FG_COLOURS.length]);
   //colour=255;
   for (Cell c : grid) {
     //colour+=127/(3*xSize*ySize-ySize-xSize+2);
@@ -49,6 +66,7 @@ void draw() {
     //stroke(colour);
     c.show();
   }
+  // Blur it, then draw it again.
   filter(BLUR, blur);
   //colour=128;
   for (Cell c : grid) {
@@ -57,10 +75,10 @@ void draw() {
     //stroke(colour);
     c.show();
   }
+  // Save it
   saveImg();
-  i++;
+  codeIndex++;
 }
-int colour;
 
 /**
  * Randomize the grid, resets all the cells, goes through it setting the links, and fills in the verticies. 
@@ -83,21 +101,20 @@ void generate() {
  */
 void keyPressed() {
     if(key=='b'){
-    i=1;
+    codeIndex=1;
     loop();
     }
   }
-int i=1;
 
 void saveImg() {
-  filter(INVERT);  
-  canvas=createImage(width, height, ALPHA);
+  //filter(INVERT);  
+  canvas=createImage(width, height, ARGB);
   canvas.loadPixels();
   loadPixels();
   canvas.pixels = pixels;
   canvas.updatePixels();
-  canvas.save("images/Code " + i + ".png");
-  updatePixels();
+  canvas.save("images/Code " + codeIndex + ".png");
+  //updatePixels();
 }
 
 /**
